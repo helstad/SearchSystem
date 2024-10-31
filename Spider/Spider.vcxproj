@@ -135,7 +135,15 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="HtmlFetcher.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="TextProcessor.cpp" />
+    <ClCompile Include="URLQueue.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="HtmlFetcher.h" />
+    <ClInclude Include="TextProcessor.h" />
+    <ClInclude Include="URLQueue.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
