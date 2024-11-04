@@ -5,7 +5,6 @@
 
 HtmlFetcher::HtmlFetcher()
 {
-	curl_global_init(CURL_GLOBAL_DEFAULT);
 	curl_ = curl_easy_init();
 	if (!curl_)
 	{
@@ -19,7 +18,6 @@ HtmlFetcher::~HtmlFetcher()
 	{
 		curl_easy_cleanup(curl_);
 	}
-	curl_global_cleanup();
 }
 
 std::string HtmlFetcher::fetch(const std::string& url)
@@ -30,17 +28,27 @@ std::string HtmlFetcher::fetch(const std::string& url)
 	}
 
 	std::string htmlContent;
-	curl_easy_setopt(curl_, CURLOPT_URL, url.c_str());
-	curl_easy_setopt(curl_, CURLOPT_WRITEFUNCTION, writeCallback);
-	curl_easy_setopt(curl_, CURLOPT_WRITEDATA, &htmlContent);
+	CURLcode res;
 
-	CURLcode res = curl_easy_perform(curl_);
-	if (res != CURLE_OK)
-	{
-		throw std::runtime_error("CURL request failed: " + std::string(curl_easy_strerror(res)));
+	res = curl_easy_setopt(curl_, CURLOPT_URL, url.c_str());
+	if (res != CURLE_OK) {
+		throw std::runtime_error("Failed to set URL option: " + std::string(curl_easy_strerror(res)));
 	}
 
-	std::cout << "Completed fetch for URL: " << url << std::endl;
+	res = curl_easy_setopt(curl_, CURLOPT_WRITEFUNCTION, writeCallback);
+	if (res != CURLE_OK) {
+		throw std::runtime_error("Failed to set WRITEFUNCTION option: " + std::string(curl_easy_strerror(res)));
+	}
+
+	res = curl_easy_setopt(curl_, CURLOPT_WRITEDATA, &htmlContent);
+	if (res != CURLE_OK) {
+		throw std::runtime_error("Failed to set WRITEDATA option: " + std::string(curl_easy_strerror(res)));
+	}
+
+	res = curl_easy_perform(curl_);
+	if (res != CURLE_OK) {
+		throw std::runtime_error("CURL request failed: " + std::string(curl_easy_strerror(res)));
+	}
 
 	return htmlContent;
 }
@@ -50,3 +58,5 @@ size_t HtmlFetcher::writeCallback(void* contents, size_t size, size_t nmemb, voi
 	((std::string*)userp)->append((char*)contents, size * nmemb);
 	return size * nmemb;
 }
+
+static CurlInitializer curInit;

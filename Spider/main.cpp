@@ -1,51 +1,23 @@
 ﻿#include "ConfigLoader.h"
 #include "DatabaseConnector.h"
 #include "URLQueue.h"
-#include "HtmlFetcher.h"
+#include "UrlProcessor.h"
 #include "TextProcessor.h"
 
 #include <iostream>
 #include <thread>
 #include <vector>
+#include <algorithm>
 
 static void fetchURL(URLQueue& queue, DatabaseConnector& dbConnector, int threadId)
 {
-    HtmlFetcher fetcher;
+    UrlProcessor processor(dbConnector);
 
     std::string url;
     while (queue.pop(url))
     {
         std::cout << "Thread " << threadId << " starting fetch for: " << url << std::endl;
-        try
-        {
-            std::string htmlContent = fetcher.fetch(url);
-            std::cout << "Thread " << threadId << " fetched content from: " << url
-                << " [Length: " << htmlContent.size() << " characters]\n";
-          
-            std::map<std::string, int> wordCounts = TextProcessor::countWords(htmlContent);
-
-            int documentId = dbConnector.saveDocument(url);
-
-            for (const auto& pair : wordCounts)
-            {
-                const std::string& word = pair.first;
-                int frequency = pair.second;
-                int wordId = dbConnector.saveWord(word);
-                dbConnector.saveWordFrequency(documentId, wordId, frequency);
-            }
-            //std::cout << "Word counts:" << std::endl;
-            //for (const auto& pair : wordCounts)
-            //{
-            //    std::cout << pair.first << ": " << pair.second << " count" << std::endl;
-            //}
-
-            std::cout << "Fetching " << url << " completed!" << std::endl;
-        }
-        catch (const std::exception& e)
-        {
-            std::cerr << "Thread " << threadId << " error fetching URL " << url << ": " << e.what() << "\n";
-        }
-
+        processor.processUrl(url);
         std::this_thread::sleep_for(std::chrono::milliseconds(500));
     }
 }
@@ -87,7 +59,9 @@ int main()
 
     std::cout << "Initialization complete, starting main processing loop..." << std::endl;
 
-    const int numThreads = std::thread::hardware_concurrency();
+    const int numThreads = (std::max)(std::thread::hardware_concurrency(), 1u);
+    std::cout << "Defined threads count: " << numThreads << std::endl;
+
     std::vector<std::thread> threads;
 
     for (int i = 0; i < numThreads; ++i)

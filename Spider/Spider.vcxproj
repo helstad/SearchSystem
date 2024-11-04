@@ -138,11 +138,13 @@
     <ClCompile Include="HtmlFetcher.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="TextProcessor.cpp" />
+    <ClCompile Include="UrlProcessor.cpp" />
     <ClCompile Include="URLQueue.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="HtmlFetcher.h" />
     <ClInclude Include="TextProcessor.h" />
+    <ClInclude Include="UrlProcessor.h" />
     <ClInclude Include="URLQueue.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

@@ -3,6 +3,18 @@
 #include <string>
 #include <curl/curl.h>
 
+struct CurlInitializer
+{
+	CurlInitializer()
+	{
+		curl_global_init(CURL_GLOBAL_DEFAULT);
+	}
+	~CurlInitializer()
+	{
+		curl_global_cleanup();
+	}
+};
+
 class HtmlFetcher
 {
 public:

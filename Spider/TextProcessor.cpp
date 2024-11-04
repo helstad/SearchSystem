@@ -15,7 +15,12 @@ std::map<std::string, int> TextProcessor::countWords(const std::string& htmlCont
     std::istringstream iss(cleanedText);
     std::string word;
     while (iss >> word) {
-        wordCount[word]++;
+        std::transform(word.begin(), word.end(), word.begin(), ::tolower);
+        
+        if (word.length() >= 3 && word.length() <= 32)
+        {
+            wordCount[word]++;
+        }
     }
 
     return wordCount;
@@ -25,7 +30,6 @@ void TextProcessor::saveWordFrequencies(DatabaseConnector& dbConnector, const st
 {
     try
     {
-        dbConnector.initDatabase();
         int documentId = dbConnector.saveDocument(url);
 
         for (const auto& [word, count] : wordCounts)
@@ -34,7 +38,7 @@ void TextProcessor::saveWordFrequencies(DatabaseConnector& dbConnector, const st
             dbConnector.saveWordFrequency(documentId, wordId, count);
         }
 
-        std::cout << "Save data for URL " << url << " completed.";
+        std::cout << "Save data for URL " << url << " completed." << std::endl;
     }
     catch (const std::exception& e)
     {
@@ -48,18 +52,10 @@ std::string TextProcessor::cleanText(const std::string& html)
 
     cleanedHtml = std::regex_replace(cleanedHtml, std::regex("<[^>]*>"), " ");
     cleanedHtml = std::regex_replace(cleanedHtml, std::regex("[^a-zA-Z0-9 ]"), " ");
-    cleanedHtml = std::regex_replace(cleanedHtml, std::regex("\\b\\w{1,2}\\b"), "");
-    cleanedHtml = std::regex_replace(cleanedHtml, std::regex("\\b\\w*\\d+\\w*\\b"), "");
+    cleanedHtml = std::regex_replace(cleanedHtml, std::regex("\\b\\w{1,2}\\b"), " ");
+    cleanedHtml = std::regex_replace(cleanedHtml, std::regex("\\b\\w*\\d+\\w*\\b"), " ");
 
-    std::istringstream iss(cleanedHtml);
-    std::ostringstream oss;
-    std::string word;
-    while (iss >> word) {
-        std::transform(word.begin(), word.end(), word.begin(), ::tolower);
-        oss << word << " ";
-    }
+    std::transform(cleanedHtml.begin(), cleanedHtml.end(), cleanedHtml.begin(), ::tolower);
 
-    std::string result = oss.str();
-    if (!result.empty()) result.pop_back();
-    return result;
+    return cleanedHtml;
 }
