@@ -135,6 +135,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="DatabaseManager.cpp" />
     <ClCompile Include="HtmlFetcher.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="TextProcessor.cpp" />
@@ -142,6 +143,7 @@
     <ClCompile Include="UrlQueue.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="DatabaseManager.h" />
     <ClInclude Include="HtmlFetcher.h" />
     <ClInclude Include="TextProcessor.h" />
     <ClInclude Include="UrlProcessor.h" />

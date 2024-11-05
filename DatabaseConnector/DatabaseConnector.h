@@ -12,17 +12,18 @@ class DatabaseConnector
 {
 public:
 	DatabaseConnector(const ConfigLoader& configLoader);
-	~DatabaseConnector();
+	~DatabaseConnector() = default;
 
 	bool connect();
-	bool prepareStatements();
 	pqxx::connection& getConnection();
 	void initDatabase();
-	int saveDocument(const std::string& url);
-	int saveWord(const std::string& word);
-	void saveWordFrequency(int documentId, int wordId, int frequency);
 
 private:
+	bool tableExists(pqxx::nontransaction& ntxn, const std::string& tableName);
+	void createTableDocuments(pqxx::nontransaction& ntxn);
+	void createTableWords(pqxx::nontransaction& ntxn);
+	void createTableDocumentsWords(pqxx::nontransaction& ntxn);
+
 	DatabaseConfig dbConfig_;
-	pqxx::connection* conn_;
+	std::unique_ptr<pqxx::connection> conn_;
 };

@@ -1,5 +1,6 @@
 ﻿#include "ConfigLoader.h"
 #include "DatabaseConnector.h"
+#include "DatabaseManager.h"
 #include "UrlQueue.h"
 #include "UrlProcessor.h"
 #include "TextProcessor.h"
@@ -9,9 +10,9 @@
 #include <vector>
 #include <algorithm>
 
-static void fetchURL(UrlQueue& queue, DatabaseConnector& dbConnector, int threadId)
+static void fetchURL(UrlQueue& queue, DatabaseConnector& dbConnector, DatabaseManager& dbManager, int threadId, int depth)
 {
-    UrlProcessor processor(dbConnector);
+    UrlProcessor processor(dbConnector, dbManager, depth);
 
     std::string url;
     while (queue.pop(url))
@@ -44,7 +45,10 @@ int main()
     dbConnector.initDatabase();
     std::cout << "Tables create or exist." << std::endl;
 
-    if (!dbConnector.prepareStatements())
+    DatabaseManager dbManager(dbConnector);
+
+
+    if (!dbManager.prepareStatements())
     {
         std::cerr << "Error preparing statements." << std::endl;
         return -1;
@@ -71,11 +75,14 @@ int main()
     const int numThreads = (std::max)(std::thread::hardware_concurrency(), 1u);
     std::cout << "Defined threads count: " << numThreads << std::endl;
 
+
     std::vector<std::thread> threads;
+
+    const int depth = configLoader.getConfig().spider.depth;
 
     for (int i = 0; i < numThreads; ++i)
     {
-        threads.emplace_back(fetchURL, std::ref(queue), std::ref(dbConnector), i + 1);
+        threads.emplace_back(fetchURL, std::ref(queue), std::ref(dbConnector), std::ref(dbManager), i + 1, depth);
     }
 
     queue.setDone();

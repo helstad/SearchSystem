@@ -8,10 +8,9 @@
 
 std::map<std::string, int> TextProcessor::countWords(const std::string& htmlContent)
 {
-    std::map<std::string, int> wordCount;
-
     std::string cleanedText = cleanText(htmlContent);
 
+    std::map<std::string, int> wordCount;
     std::istringstream iss(cleanedText);
     std::string word;
     while (iss >> word) {
@@ -24,26 +23,6 @@ std::map<std::string, int> TextProcessor::countWords(const std::string& htmlCont
     }
 
     return wordCount;
-}
-
-void TextProcessor::saveWordFrequencies(DatabaseConnector& dbConnector, const std::string& url, const std::map<std::string, int>& wordCounts)
-{
-    try
-    {
-        int documentId = dbConnector.saveDocument(url);
-
-        for (const auto& [word, count] : wordCounts)
-        {
-            int wordId = dbConnector.saveWord(word);
-            dbConnector.saveWordFrequency(documentId, wordId, count);
-        }
-
-        std::cout << "Save data for URL " << url << " completed." << std::endl;
-    }
-    catch (const std::exception& e)
-    {
-        std::cerr << "Error save data for URL " << url << ": " << e.what() << std::endl;
-    }
 }
 
 std::string TextProcessor::cleanText(const std::string& html)
