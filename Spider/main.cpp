@@ -1,6 +1,6 @@
 ﻿#include "ConfigLoader.h"
 #include "DatabaseConnector.h"
-#include "URLQueue.h"
+#include "UrlQueue.h"
 #include "UrlProcessor.h"
 #include "TextProcessor.h"
 
@@ -9,7 +9,7 @@
 #include <vector>
 #include <algorithm>
 
-static void fetchURL(URLQueue& queue, DatabaseConnector& dbConnector, int threadId)
+static void fetchURL(UrlQueue& queue, DatabaseConnector& dbConnector, int threadId)
 {
     UrlProcessor processor(dbConnector);
 
@@ -50,14 +50,23 @@ int main()
         return -1;
     }
 
-    URLQueue queue;
+    UrlQueue queue;
 
-    queue.push("https://ya.ru/");
-    queue.push("https://shazoo.ru/");
-    queue.push("https://dtf.ru/");
+    const auto& urls = configLoader.getConfig().links.urls;
+    if (urls.empty())
+    {
+        std::cout << "Warning: No URLs in the [Links] section. Using default start URL." << std::endl;
+        queue.push(configLoader.getConfig().spider.start_url);
+    }
+    else
+    {
+        for (const auto& url : urls)
+        {
+            queue.push(url);
+        }
+    }
 
-
-    std::cout << "Initialization complete, starting main processing loop..." << std::endl;
+    std::cout << "Initialization complete, start fetching..." << std::endl;
 
     const int numThreads = (std::max)(std::thread::hardware_concurrency(), 1u);
     std::cout << "Defined threads count: " << numThreads << std::endl;

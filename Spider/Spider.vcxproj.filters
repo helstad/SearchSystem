@@ -21,7 +21,7 @@
     <ClCompile Include="HtmlFetcher.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="URLQueue.cpp">
+    <ClCompile Include="UrlQueue.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
     <ClCompile Include="TextProcessor.cpp">
@@ -35,7 +35,7 @@
     <ClInclude Include="HtmlFetcher.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="URLQueue.h">
+    <ClInclude Include="UrlQueue.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
     <ClInclude Include="TextProcessor.h">

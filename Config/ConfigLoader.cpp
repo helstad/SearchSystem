@@ -60,6 +60,7 @@ void ConfigLoader::parseLine(const std::string& line, const std::string& section
 		if (section == "Database") loadDatabaseConfig(key, value);
 		if (section == "Spider") loadSpiderConfig(key, value);
 		if (section == "Server") loadServerConfig(key, value);
+		if (section == "Links") loadLinksConfig(key, value);
 	}
 }
 
@@ -120,5 +121,18 @@ void ConfigLoader::loadServerConfig(const std::string& key, const std::string& v
 	if (loadMap.count(key))
 	{
 		loadMap.at(key)(value);
+	}
+}
+
+void ConfigLoader::loadLinksConfig(const std::string& key, const std::string& value)
+{
+	if (key == "urls")
+	{
+		std::istringstream iss(value);
+		std::string url;
+		while (std::getline(iss, url, ','))
+		{
+			config_.links.urls.push_back(url);
+		}
 	}
 }

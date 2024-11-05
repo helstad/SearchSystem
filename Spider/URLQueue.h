@@ -5,7 +5,7 @@
 #include <mutex>
 #include <condition_variable>
 
-class URLQueue
+class UrlQueue
 {
 public:
 	void push(const std::string& url);

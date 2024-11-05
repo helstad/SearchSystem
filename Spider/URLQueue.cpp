@@ -1,13 +1,13 @@
-#include "URLQueue.h"
+#include "UrlQueue.h"
 
-void URLQueue::push(const std::string& url)
+void UrlQueue::push(const std::string& url)
 {
 	std::lock_guard<std::mutex> lock(mutex_);
 	queue_.push(url);
 	cv_.notify_one();
 }
 
-bool URLQueue::pop(std::string& url)
+bool UrlQueue::pop(std::string& url)
 {
 	std::unique_lock<std::mutex> lock(mutex_);
 	cv_.wait(lock, [this] { return !queue_.empty() || done_; });
@@ -22,14 +22,14 @@ bool URLQueue::pop(std::string& url)
 	return true;
 }
 
-void URLQueue::setDone()
+void UrlQueue::setDone()
 {
 	std::lock_guard<std::mutex> lock(mutex_);
 	done_ = true;
 	cv_.notify_all();
 }
 
-bool URLQueue::isEmpty() const
+bool UrlQueue::isEmpty() const
 {
 	std::lock_guard<std::mutex> lock(mutex_);
 	return queue_.empty();

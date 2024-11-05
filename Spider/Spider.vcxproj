@@ -139,13 +139,13 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="TextProcessor.cpp" />
     <ClCompile Include="UrlProcessor.cpp" />
-    <ClCompile Include="URLQueue.cpp" />
+    <ClCompile Include="UrlQueue.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="HtmlFetcher.h" />
     <ClInclude Include="TextProcessor.h" />
     <ClInclude Include="UrlProcessor.h" />
-    <ClInclude Include="URLQueue.h" />
+    <ClInclude Include="UrlQueue.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

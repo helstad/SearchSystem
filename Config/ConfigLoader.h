@@ -2,6 +2,7 @@
 
 #include <iostream>
 #include <map>
+#include <vector>
 
 struct DatabaseConfig
 {
@@ -28,11 +29,17 @@ struct ServerConfig
 	int port;
 };
 
+struct LinksConfig
+{
+	std::vector<std::string> urls;
+};
+
 struct Config
 {
 	DatabaseConfig database;
 	SpiderConfig spider;
 	ServerConfig server;
+	LinksConfig links;
 };
 
 class ConfigLoader
@@ -51,5 +58,6 @@ private:
 	void loadDatabaseConfig(const std::string& key, const std::string& value);
 	void loadSpiderConfig(const std::string& key, const std::string& value);
 	void loadServerConfig(const std::string& key, const std::string& value);
+	void loadLinksConfig(const std::string& key, const std::string& value);
 };
 
