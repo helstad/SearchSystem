@@ -133,10 +133,10 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="DatabaseConnector.h" />
+    <ClInclude Include="database_connector.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="DatabaseConnector.cpp" />
+    <ClCompile Include="database_connector.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

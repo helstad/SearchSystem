@@ -15,6 +15,12 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DatabaseConnector", "Databa
 		{4C2A4251-1AE9-4AF0-868C-014C9CF2DB69} = {4C2A4251-1AE9-4AF0-868C-014C9CF2DB69}
 	EndProjectSection
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Server", "Server\Server.vcxproj", "{088EB379-8167-4FBB-81EB-1B8F8EBA8C29}"
+	ProjectSection(ProjectDependencies) = postProject
+		{4C2A4251-1AE9-4AF0-868C-014C9CF2DB69} = {4C2A4251-1AE9-4AF0-868C-014C9CF2DB69}
+		{E05F6A72-2928-4438-BC93-3F523A4C9D30} = {E05F6A72-2928-4438-BC93-3F523A4C9D30}
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -47,6 +53,14 @@ Global
 		{E05F6A72-2928-4438-BC93-3F523A4C9D30}.Release|x64.Build.0 = Release|x64
 		{E05F6A72-2928-4438-BC93-3F523A4C9D30}.Release|x86.ActiveCfg = Release|Win32
 		{E05F6A72-2928-4438-BC93-3F523A4C9D30}.Release|x86.Build.0 = Release|Win32
+		{088EB379-8167-4FBB-81EB-1B8F8EBA8C29}.Debug|x64.ActiveCfg = Debug|x64
+		{088EB379-8167-4FBB-81EB-1B8F8EBA8C29}.Debug|x64.Build.0 = Debug|x64
+		{088EB379-8167-4FBB-81EB-1B8F8EBA8C29}.Debug|x86.ActiveCfg = Debug|Win32
+		{088EB379-8167-4FBB-81EB-1B8F8EBA8C29}.Debug|x86.Build.0 = Debug|Win32
+		{088EB379-8167-4FBB-81EB-1B8F8EBA8C29}.Release|x64.ActiveCfg = Release|x64
+		{088EB379-8167-4FBB-81EB-1B8F8EBA8C29}.Release|x64.Build.0 = Release|x64
+		{088EB379-8167-4FBB-81EB-1B8F8EBA8C29}.Release|x86.ActiveCfg = Release|Win32
+		{088EB379-8167-4FBB-81EB-1B8F8EBA8C29}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

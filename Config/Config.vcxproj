@@ -129,10 +129,10 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="ConfigLoader.h" />
+    <ClInclude Include="config_loader.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="ConfigLoader.cpp" />
+    <ClCompile Include="config_loader.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
