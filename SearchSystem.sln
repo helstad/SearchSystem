@@ -5,6 +5,7 @@ VisualStudioVersion = 17.11.35327.3
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Spider", "Spider\Spider.vcxproj", "{A4F8D88D-24C6-4395-B666-78B7F2E3D7B1}"
 	ProjectSection(ProjectDependencies) = postProject
+		{4C2A4251-1AE9-4AF0-868C-014C9CF2DB69} = {4C2A4251-1AE9-4AF0-868C-014C9CF2DB69}
 		{E05F6A72-2928-4438-BC93-3F523A4C9D30} = {E05F6A72-2928-4438-BC93-3F523A4C9D30}
 	EndProjectSection
 EndProject
