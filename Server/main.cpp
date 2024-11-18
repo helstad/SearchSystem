@@ -45,7 +45,7 @@ int main() {
     }
 
     auto const address = net::ip::make_address("0.0.0.0");
-    unsigned short port = 8080;
+    unsigned short port = config.get_config().server.port;
 
     net::io_context ioc{1};
 
@@ -54,7 +54,7 @@ int main() {
 
     httpServer(acceptor, socket, db_connector);
 
-    std::cout << "Open browser and connect to http://localhost:8080 to see the "
+    std::cout << "Open browser and connect to http://localhost:" << port << " to see the "
                  "web server operating"
               << '\n';
 
