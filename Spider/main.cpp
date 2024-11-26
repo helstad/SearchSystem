@@ -18,6 +18,10 @@ int main() {
     return -1;
   }
 
+  for (auto &url : config_loader.get_urls()) {
+    std::cout << "URL: " << url << '\n';
+  }
+
   database_connector db_connector(config_loader);
   if (!db_connector.is_connected()) {
     return -1;

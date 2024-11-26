@@ -41,7 +41,7 @@ bool config_loader::load() {
 
   file.close();
 
-  if (config_.spider.start_url.empty() && config_.links.urls.empty()) {
+  if (config_.links.urls.empty()) {
     std::cerr << "Error: Neither start_url nor any URLs are defined in the "
                  "configuration.\n";
   }
@@ -52,13 +52,13 @@ bool config_loader::load() {
 const config &config_loader::get_config() const { return config_; }
 
 std::vector<std::string> config_loader::get_urls() const {
-  if (config_.links.urls.empty()) {
+  /*if (config_.links.urls.empty()) {
     if (!config_.spider.start_url.empty()) {
       return {config_.spider.start_url};
     } else {
       throw std::runtime_error("No one URLs in ini-file");
     }
-  }
+  }*/
   return config_.links.urls;
 }
 
@@ -106,8 +106,8 @@ void config_loader::load_spider_config(const std::string &key,
                                        const std::string &value) {
   static const std::map<std::string, std::function<void(const std::string &)>>
       load_map = {
-          {"start_url",
-           [this](const std::string &v) { config_.spider.start_url = v; }},
+          //{"start_url",
+          // [this](const std::string &v) { config_.spider.start_url = v; }},
           {"depth", [this](const std::string &v) {
              try {
                config_.spider.depth = std::stoi(v);
@@ -142,16 +142,12 @@ void config_loader::load_links_config(const std::string &key,
   if (key == "urls") {
     config_.links.urls.clear();
 
-    if (!config_.spider.start_url.empty()) {
-      config_.links.urls.push_back(config_.spider.start_url);
-
-      if (!value.empty()) {
-        std::istringstream iss(value);
-        std::string url;
-        while (std::getline(iss, url, ',')) {
-          if (!url.empty()) {
-            config_.links.urls.push_back(url);
-          }
+    if (!value.empty()) {
+      std::istringstream iss(value);
+      std::string url;
+      while (std::getline(iss, url, ',')) {
+        if (!url.empty()) {
+          config_.links.urls.push_back(url);
         }
       }
     }
