@@ -33,6 +33,10 @@ request_handler::generate_result_template(const std::string &query) const {
     words.push_back(word);
   }
 
+  std::for_each(words.begin(), words.end(), [](auto &word) {
+    std::ranges::transform(word, word.begin(), ::tolower);
+                });
+
   pqxx::work txn(*db_conn_);
 
   std::string words_placeholders;
@@ -47,7 +51,7 @@ request_handler::generate_result_template(const std::string &query) const {
       "FROM documents d "
       "JOIN documents_words dw ON d.id_url = dw.url_id "
       "JOIN words w ON dw.word_id = w.id_word "
-      "WHERE w.word_url IN (" +
+      "WHERE LOWER(w.word_url) IN (" +
       words_placeholders +
       ") "
       "GROUP BY d.id_url "

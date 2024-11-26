@@ -10,4 +10,6 @@ public:
   [[nodiscard]] auto extract_links(const std::string &html_content,
                                    const std::string &base_url)
       -> std::vector<std::string>;
+
+  std::string remove_fragment(const std::string &url);
 };

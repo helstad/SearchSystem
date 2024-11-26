@@ -18,7 +18,6 @@ struct database_config {
 };
 
 struct spider_config {
-  std::string start_url;
   int depth{};
 };
 

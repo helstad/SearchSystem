@@ -1,6 +1,7 @@
 #include "link_extractor.h"
 #include <regex>
 #include <vector>
+#include <string>
 
 std::vector<std::string>
 link_extractor::extract_links(const std::string &html_content,
@@ -13,7 +14,14 @@ link_extractor::extract_links(const std::string &html_content,
   auto links_end = std::sregex_iterator();
 
   for (std::sregex_iterator i = links_begin; i != links_end; ++i) {
-    std::string link = i->str(1);
+    std::string link = (*i)[1].str();
+
+    if (link.starts_with("#")) {
+      continue;
+    }
+    
+    link = remove_fragment(link);
+
     if (link.starts_with("http")) {
       links.push_back(link);
     } else if (link.starts_with("/")) {
@@ -23,4 +31,13 @@ link_extractor::extract_links(const std::string &html_content,
   }
 
   return links;
+}
+
+std::string link_extractor::remove_fragment(const std::string &url) {
+  size_t pos = url.find('#');
+  if (pos != std::string::npos) {
+    return url.substr(0, pos);
+  }
+
+  return url;
 }
