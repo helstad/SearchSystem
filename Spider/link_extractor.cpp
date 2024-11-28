@@ -11,8 +11,6 @@ std::vector<std::string>
 link_extractor::extract_links( const std::string& html_content,
 	const std::string& base_url ) {
 	std::vector<std::string> links;
-	std::unordered_set<std::string> unique_links;
-
 	std::regex pattern( "<a\\s+(?:[^>]*?\\s+)?href=\"([^\"]*)\"" );
 
 	auto links_begin =
@@ -30,10 +28,8 @@ link_extractor::extract_links( const std::string& html_content,
 
 		std::string full_url = normalize_url( base_url, link );
 
-		if ( !full_url.empty() && unique_links.insert( full_url ).second ) {
-			if ( is_valid_url( full_url ) ) {
+		if ( !full_url.empty() && is_valid_url( full_url ) ) {
 				links.push_back( full_url );
-			}
 		}
 	}
 
@@ -47,59 +43,54 @@ std::string link_extractor::remove_fragment( const std::string& url ) {
 
 std::string link_extractor::normalize_url( const std::string& base_url,
 	const std::string& relative_url ) {
-	if ( relative_url.find( "://" ) != std::string::npos ) {
-		return normalize_absolute_url( relative_url );
-	}
+	if ( relative_url.starts_with( "http" ) ) { return normalize_absolute_url( relative_url ); }
 
-	std::string normalizedUrl = relative_url;
-	std::transform( normalizedUrl.begin(), normalizedUrl.end(),
-		normalizedUrl.begin(),
-		[] ( char c ) { return c == '\\' ? '/' : c; } );
+	std::string normalized_url = relative_url;
+	std::replace( normalized_url.begin(), normalized_url.end(), '\\', '/' );
 
-	if ( normalizedUrl.starts_with( "//" ) ) {
-		size_t protocolPos = base_url.find( "://" );
-		std::string protocol = ( protocolPos != std::string::npos )
-			? base_url.substr( 0, protocolPos )
+	if ( normalized_url.starts_with( "//" ) ) {
+		size_t protocol_pos = base_url.find( "://" );
+		std::string protocol = ( protocol_pos != std::string::npos )
+			? base_url.substr( 0, protocol_pos )
 			: "http";
 
-		return normalize_absolute_url( protocol + ":" + normalizedUrl );
+		return normalize_absolute_url( protocol + ": " + normalized_url );
 	}
 
-	if ( normalizedUrl.starts_with( "/" ) ) {
-		size_t domainEnd = base_url.find( '/', base_url.find( "://" ) + 3 );
-		std::string domain = ( domainEnd != std::string::npos )
-			? base_url.substr( 0, domainEnd )
+	if ( normalized_url.starts_with( "/" ) ) {
+		size_t domain_end = base_url.find( '/', base_url.find( "://" ) + 3 );
+		std::string domain = ( domain_end != std::string::npos )
+			? base_url.substr( 0, domain_end )
 			: base_url;
 
-		return normalize_absolute_url( domain + normalizedUrl );
+		return normalize_absolute_url( domain + normalized_url );
 	}
 
-	size_t lastSlashPos = base_url.rfind( '/' );
-	std::string base = ( lastSlashPos != std::string::npos )
-		? base_url.substr( 0, lastSlashPos + 1 )
+	size_t last_slash_pos = base_url.rfind( '/' );
+	std::string base = ( last_slash_pos != std::string::npos )
+		? base_url.substr( 0, last_slash_pos + 1 )
 		: base_url + "/";
 
-	return normalize_absolute_url( base + normalizedUrl );
+	return normalize_absolute_url( base + normalized_url );
 }
 
 std::string link_extractor::normalize_absolute_url( const std::string& url ) {
-	std::string normalizedUrl = url;
+	std::string normalized_url = url;
+	size_t protocol_pos = normalized_url.find( "://" );
 
-	std::transform( normalizedUrl.begin(), normalizedUrl.end(),
-		normalizedUrl.begin(), ::tolower );
-
-	if ( normalizedUrl.back() == '/' ) {
-		normalizedUrl.pop_back();
+	if ( protocol_pos != std::string::npos ) {
+		std::transform( normalized_url.begin(), normalized_url.begin() + protocol_pos + 3,
+			normalized_url.begin(), ::tolower );
 	}
 
-	std::regex wwwRegex( R"(^((?:http|https)://)www\.(.*)$)" );
+	if ( normalized_url.back() == '/' ) { normalized_url.pop_back(); }
 
-	std::smatch match;
-	if ( std::regex_match( normalizedUrl, match, wwwRegex ) ) {
-		normalizedUrl = match[ 1 ].str() + match[ 2 ].str();
+	size_t pos = normalized_url.find( "://www." );
+	if ( pos != std::string::npos ) {
+		normalized_url.replace( pos + 3, 4, "" );
 	}
 
-	return normalizedUrl + "/";
+	return normalized_url;
 }
 
 bool link_extractor::is_valid_url( const std::string& url ) {
@@ -132,9 +123,7 @@ bool link_extractor::is_valid_url( const std::string& url ) {
 			".svg",      ".xml",       "api.php?", "gitweb" };
 
 	for ( const auto& suffix : suffix_blacklist ) {
-		if ( url.find( suffix ) != std::string::npos ) {
-			return false;
-		}
+		if ( url.find( suffix ) != std::string::npos ) { return false; }
 	}
 
 	return true;
